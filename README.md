@@ -101,6 +101,4 @@ The app requires storage permissions to access local music files. Permissions ar
 
 This project is open source and available under the MIT License.
 
-## Author
 
-Created with ❤️ using Flutter
