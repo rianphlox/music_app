@@ -15,6 +15,9 @@ dependencies:
   # Audio playback - most stable packages
   just_audio: ^0.9.35
   audio_session: ^0.1.16
+
+  # Metadata extraction for album art
+  audiotags: ^1.4.5
   
   # File system access - latest stable versions
   permission_handler: ^11.0.1

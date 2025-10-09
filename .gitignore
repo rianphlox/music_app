@@ -1,0 +1,123 @@
+# ===========================
+# Flutter & Dart
+# ===========================
+.dart_tool/
+.packages
+.pub-cache/
+.pub/
+.flutter-plugins
+.flutter-plugins-dependencies
+.flutter-versions
+.ios/
+.macos/
+build/
+coverage/
+**/doc/api/
+generated_plugin_registrant.dart
+
+# ===========================
+# IntelliJ / Android Studio
+# ===========================
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# ===========================
+# VS Code
+# ===========================
+.vscode/
+
+# ===========================
+# Android
+# ===========================
+**/local.properties
+**/.gradle/
+**/gradlew
+**/gradlew.bat
+**/gradle-wrapper.jar
+**/captures/
+**/outputs/
+**/build/
+**/release/
+**/profile/
+**/debug/
+*.apk
+*.aar
+*.ap_
+*.dex
+*.class
+*.log
+
+# ===========================
+# iOS
+# ===========================
+ios/Flutter/Flutter.framework/
+ios/Flutter/Flutter.podspec
+ios/Flutter/App.framework
+ios/.symlinks/
+ios/Pods/
+ios/Runner/GeneratedPluginRegistrant.*
+ios/build/
+ios/DerivedData/
+*.xcuserstate
+*.xcworkspace
+*.xcodeproj/*
+!*.xcodeproj/project.pbxproj
+
+# ===========================
+# macOS
+# ===========================
+macos/Pods/
+macos/Flutter/ephemeral/
+macos/build/
+macos/DerivedData/
+
+# ===========================
+# Windows
+# ===========================
+windows/flutter/
+windows/build/
+
+# ===========================
+# Linux
+# ===========================
+linux/flutter/
+linux/build/
+
+# ===========================
+# Web
+# ===========================
+web/.dart_tool/
+web/build/
+
+# ===========================
+# Miscellaneous
+# ===========================
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.history/
+.svn/
+.swiftpm/
+build/
+migrate_working_dir/
+app.*.symbols
+app.*.map.json
+.claude/
+
+# ===========================
+# Sensitive Files (Do NOT push)
+# ===========================
+# Firebase & Google
+google-services.json
+GoogleService-Info.plist
+
+# Environment files
+.env
+.env.*
+keys.json
+secret.json
+api_keys.json

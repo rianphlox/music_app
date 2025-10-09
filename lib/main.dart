@@ -6,10 +6,12 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:audiotags/audiotags.dart';
 import 'dart:io';
 import 'dart:math';
 import 'dart:convert';
 import 'dart:isolate';
+import 'dart:typed_data';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -1790,6 +1792,7 @@ class _NowPlayingScreenWithDataState extends State<NowPlayingScreenWithData> {
   int shuffleIndex = 0;
   String currentSongTitle = '';
   String currentArtist = '';
+  Uint8List? albumArt;
 
   @override
   void initState() {
@@ -1828,6 +1831,7 @@ class _NowPlayingScreenWithDataState extends State<NowPlayingScreenWithData> {
   Future<void> _playFile() async {
     if (widget.filePath != null) {
       await _audioManager.playFromFile(widget.filePath!);
+      await _extractAlbumArt(widget.filePath!);
     }
   }
 
@@ -1837,8 +1841,8 @@ class _NowPlayingScreenWithDataState extends State<NowPlayingScreenWithData> {
       await _audioManager.playFromFile(file.path);
       setState(() {
         currentSongTitle = _getFileName(file.path);
-        currentArtist = 'Unknown Artist';
       });
+      await _extractAlbumArt(file.path);
     }
   }
 
@@ -1852,11 +1856,24 @@ class _NowPlayingScreenWithDataState extends State<NowPlayingScreenWithData> {
           currentIndex = shuffledIndices[shuffleIndex];
         });
         await _playCurrentSong();
+      } else {
+        // Loop back to beginning when shuffle is on
+        setState(() {
+          shuffleIndex = 0;
+          currentIndex = shuffledIndices[shuffleIndex];
+        });
+        await _playCurrentSong();
       }
     } else {
       if (currentIndex < playlist.length - 1) {
         setState(() {
           currentIndex++;
+        });
+        await _playCurrentSong();
+      } else {
+        // Loop back to beginning when at end of playlist
+        setState(() {
+          currentIndex = 0;
         });
         await _playCurrentSong();
       }
@@ -1901,6 +1918,21 @@ class _NowPlayingScreenWithDataState extends State<NowPlayingScreenWithData> {
     String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
     String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
     return "$twoDigitMinutes:$twoDigitSeconds";
+  }
+
+  Future<void> _extractAlbumArt(String filePath) async {
+    try {
+      final Tag? tag = await AudioTags.read(filePath);
+      setState(() {
+        albumArt = tag?.pictures.isNotEmpty == true ? tag!.pictures.first.bytes : null;
+        currentArtist = tag?.artist ?? 'Unknown Artist';
+      });
+    } catch (e) {
+      setState(() {
+        albumArt = null;
+        currentArtist = 'Unknown Artist';
+      });
+    }
   }
 
   @override
@@ -1960,15 +1992,6 @@ class _NowPlayingScreenWithDataState extends State<NowPlayingScreenWithData> {
                     height: 240,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          themeColor.withOpacity(0.8),
-                          themeColor,
-                          themeColor.withOpacity(0.6),
-                        ],
-                      ),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withOpacity(0.3),
@@ -1980,47 +2003,77 @@ class _NowPlayingScreenWithDataState extends State<NowPlayingScreenWithData> {
                     child: Stack(
                       alignment: Alignment.center,
                       children: [
-                        // Vinyl texture rings
+                        // Album art or gradient background
                         Container(
-                          width: 200,
-                          height: 200,
+                          width: 240,
+                          height: 240,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            border: Border.all(
-                              color: Colors.black.withOpacity(0.1),
-                              width: 1,
-                            ),
+                            image: albumArt != null
+                              ? DecorationImage(
+                                  image: MemoryImage(albumArt!),
+                                  fit: BoxFit.cover,
+                                )
+                              : null,
+                            gradient: albumArt == null ? LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [
+                                themeColor.withOpacity(0.8),
+                                themeColor,
+                                themeColor.withOpacity(0.6),
+                              ],
+                            ) : null,
                           ),
+                          child: albumArt == null ? Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              // Vinyl texture rings when no album art
+                              Container(
+                                width: 200,
+                                height: 200,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: Colors.black.withOpacity(0.1),
+                                    width: 1,
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                width: 160,
+                                height: 160,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: Colors.black.withOpacity(0.1),
+                                    width: 1,
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                width: 120,
+                                height: 120,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: Colors.black.withOpacity(0.1),
+                                    width: 1,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ) : null,
                         ),
-                        Container(
-                          width: 160,
-                          height: 160,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: Colors.black.withOpacity(0.1),
-                              width: 1,
-                            ),
-                          ),
-                        ),
-                        Container(
-                          width: 120,
-                          height: 120,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: Colors.black.withOpacity(0.1),
-                              width: 1,
-                            ),
-                          ),
-                        ),
-                        // Center label
+                        // Center label/hole (always visible)
                         Container(
                           width: 80,
                           height: 80,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: _settingsManager.isDarkMode ? Colors.grey[900] : Colors.white,
+                            color: albumArt != null
+                              ? Colors.black.withOpacity(0.7)
+                              : (_settingsManager.isDarkMode ? Colors.grey[900] : Colors.white),
                             boxShadow: [
                               BoxShadow(
                                 color: Colors.black.withOpacity(0.2),
@@ -2032,7 +2085,7 @@ class _NowPlayingScreenWithDataState extends State<NowPlayingScreenWithData> {
                           child: Icon(
                             Icons.music_note,
                             size: 40,
-                            color: themeColor,
+                            color: albumArt != null ? Colors.white : themeColor,
                           ),
                         ),
                         // Center hole
