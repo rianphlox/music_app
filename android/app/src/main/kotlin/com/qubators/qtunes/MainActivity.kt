@@ -1,4 +1,4 @@
-package com.example.music_app
+package com.qubators.qtunes
 
 import io.flutter.embedding.android.FlutterActivity
 

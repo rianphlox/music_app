@@ -39,20 +39,20 @@ class CachedSong {
   });
 
   Map<String, dynamic> toJson() => {
-    'path': path,
-    'title': title,
-    'artist': artist,
-    'duration': duration,
-    'dateModified': dateModified,
-  };
+        'path': path,
+        'title': title,
+        'artist': artist,
+        'duration': duration,
+        'dateModified': dateModified,
+      };
 
   factory CachedSong.fromJson(Map<String, dynamic> json) => CachedSong(
-    path: json['path'] ?? '',
-    title: json['title'] ?? '',
-    artist: json['artist'] ?? 'Unknown Artist',
-    duration: json['duration'] ?? 0,
-    dateModified: json['dateModified'] ?? 0,
-  );
+        path: json['path'] ?? '',
+        title: json['title'] ?? '',
+        artist: json['artist'] ?? 'Unknown Artist',
+        duration: json['duration'] ?? 0,
+        dateModified: json['dateModified'] ?? 0,
+      );
 }
 
 // Playlist model
@@ -72,20 +72,20 @@ class Playlist {
   });
 
   Map<String, dynamic> toJson() => {
-    'id': id,
-    'name': name,
-    'songPaths': songPaths,
-    'createdAt': createdAt.millisecondsSinceEpoch,
-    'updatedAt': updatedAt.millisecondsSinceEpoch,
-  };
+        'id': id,
+        'name': name,
+        'songPaths': songPaths,
+        'createdAt': createdAt.millisecondsSinceEpoch,
+        'updatedAt': updatedAt.millisecondsSinceEpoch,
+      };
 
   factory Playlist.fromJson(Map<String, dynamic> json) => Playlist(
-    id: json['id'] ?? '',
-    name: json['name'] ?? '',
-    songPaths: List<String>.from(json['songPaths'] ?? []),
-    createdAt: DateTime.fromMillisecondsSinceEpoch(json['createdAt'] ?? 0),
-    updatedAt: DateTime.fromMillisecondsSinceEpoch(json['updatedAt'] ?? 0),
-  );
+        id: json['id'] ?? '',
+        name: json['name'] ?? '',
+        songPaths: List<String>.from(json['songPaths'] ?? []),
+        createdAt: DateTime.fromMillisecondsSinceEpoch(json['createdAt'] ?? 0),
+        updatedAt: DateTime.fromMillisecondsSinceEpoch(json['updatedAt'] ?? 0),
+      );
 
   Playlist copyWith({
     String? id,
@@ -128,7 +128,8 @@ class PlaylistManager {
 
   static Future<void> savePlaylists(List<Playlist> playlists) async {
     try {
-      final playlistsJson = playlists.map((playlist) => playlist.toJson()).toList();
+      final playlistsJson =
+          playlists.map((playlist) => playlist.toJson()).toList();
       await _prefs.setString(_playlistsKey, jsonEncode(playlistsJson));
     } catch (e) {
       debugPrint('Error saving playlists: $e');
@@ -156,7 +157,8 @@ class PlaylistManager {
     await savePlaylists(playlists);
   }
 
-  static Future<void> addSongToPlaylist(String playlistId, String songPath) async {
+  static Future<void> addSongToPlaylist(
+      String playlistId, String songPath) async {
     final playlists = await getPlaylists();
     final playlistIndex = playlists.indexWhere((p) => p.id == playlistId);
 
@@ -173,7 +175,8 @@ class PlaylistManager {
     }
   }
 
-  static Future<void> removeSongFromPlaylist(String playlistId, String songPath) async {
+  static Future<void> removeSongFromPlaylist(
+      String playlistId, String songPath) async {
     final playlists = await getPlaylists();
     final playlistIndex = playlists.indexWhere((p) => p.id == playlistId);
 
@@ -249,7 +252,8 @@ class SongCacheManager {
 }
 
 // Isolate function for background song scanning
-Future<List<CachedSong>> _scanSongsInBackground(List<String> directories) async {
+Future<List<CachedSong>> _scanSongsInBackground(
+    List<String> directories) async {
   final List<CachedSong> songs = [];
   final audioExtensions = ['.mp3', '.m4a', '.wav', '.flac', '.aac'];
 
@@ -481,17 +485,20 @@ class AudioManager {
     final nextSongPath = currentPlaylist[currentIndex];
 
     // Try to get metadata for the next song (simplified approach)
-    final fileName = nextSongPath.split('/').last.replaceAll(RegExp(r'\.[^.]*$'), '');
+    final fileName =
+        nextSongPath.split('/').last.replaceAll(RegExp(r'\.[^.]*$'), '');
     await playFromFile(nextSongPath, title: fileName, artist: 'Unknown Artist');
     onPlayNext?.call(currentIndex);
   }
 
-  Future<void> playFromFile(String filePath, {String? title, String? artist}) async {
+  Future<void> playFromFile(String filePath,
+      {String? title, String? artist}) async {
     try {
       currentFilePath = filePath;
 
       // Extract filename if title not provided
-      final fileName = title ?? filePath.split('/').last.replaceAll(RegExp(r'\.[^.]*$'), '');
+      final fileName =
+          title ?? filePath.split('/').last.replaceAll(RegExp(r'\.[^.]*$'), '');
       final artistName = artist ?? 'Unknown Artist';
 
       // Set the audio source directly
@@ -549,7 +556,7 @@ class AudioManager {
   Future<void> play() async => await _audioPlayer.play();
   Future<void> pause() async => await _audioPlayer.pause();
   Future<void> stop() async => await _audioPlayer.stop();
-  
+
   Future<void> seek(Duration position) async {
     await _audioPlayer.seek(position);
   }
@@ -582,7 +589,8 @@ class AudioManager {
   void setBassLevel(double level) {
     bassLevel = level;
     // Apply bass boost (simplified implementation)
-    _audioPlayer.setVolume((volumeBoostLevel * (1.0 + level / 10.0)).clamp(0.0, 2.0));
+    _audioPlayer
+        .setVolume((volumeBoostLevel * (1.0 + level / 10.0)).clamp(0.0, 2.0));
   }
 
   void setTrebleLevel(double level) {
@@ -701,10 +709,13 @@ class _MainScreenState extends State<MainScreen> {
         selectedItemColor: _settingsManager.themeColor,
         unselectedItemColor: Colors.grey,
         items: [
-          BottomNavigationBarItem(icon: Icon(Icons.library_music), label: 'Library'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.library_music), label: 'Library'),
           BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
-          BottomNavigationBarItem(icon: Icon(Icons.playlist_play), label: 'Playlists'),
-          BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Settings'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.playlist_play), label: 'Playlists'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.settings), label: 'Settings'),
         ],
       ),
     );
@@ -725,10 +736,18 @@ class _LibraryScreenState extends State<LibraryScreen> {
   bool isRefreshing = false;
 
   final List<Color> randomColors = [
-    Color(0xFFFF69B4), Color(0xFFFFB347), Color(0xFFDDA0DD),
-    Color(0xFF10B981), Color(0xFFFF6347), Color(0xFF98FB98),
-    Color(0xFF87CEEB), Color(0xFFDDA0DD), Color(0xFFF0E68C),
-    Color(0xFFFF7F50), Color(0xFF20B2AA), Color(0xFFBA55D3),
+    Color(0xFFFF69B4),
+    Color(0xFFFFB347),
+    Color(0xFFDDA0DD),
+    Color(0xFF10B981),
+    Color(0xFFFF6347),
+    Color(0xFF98FB98),
+    Color(0xFF87CEEB),
+    Color(0xFFDDA0DD),
+    Color(0xFFF0E68C),
+    Color(0xFFFF7F50),
+    Color(0xFF20B2AA),
+    Color(0xFFBA55D3),
   ];
 
   @override
@@ -864,7 +883,8 @@ class _LibraryScreenState extends State<LibraryScreen> {
       final shouldCreate = await showDialog<bool>(
         context: context,
         builder: (context) => AlertDialog(
-          backgroundColor: _settingsManager.isDarkMode ? Colors.grey[900] : Colors.white,
+          backgroundColor:
+              _settingsManager.isDarkMode ? Colors.grey[900] : Colors.white,
           title: Text(
             'No Playlists Found',
             style: TextStyle(
@@ -882,7 +902,10 @@ class _LibraryScreenState extends State<LibraryScreen> {
               onPressed: () => Navigator.pop(context, false),
               child: Text(
                 'Cancel',
-                style: TextStyle(color: _settingsManager.isDarkMode ? Colors.white70 : Colors.black54),
+                style: TextStyle(
+                    color: _settingsManager.isDarkMode
+                        ? Colors.white70
+                        : Colors.black54),
               ),
             ),
             TextButton(
@@ -902,23 +925,29 @@ class _LibraryScreenState extends State<LibraryScreen> {
         final newPlaylistName = await showDialog<String>(
           context: context,
           builder: (context) => AlertDialog(
-            backgroundColor: _settingsManager.isDarkMode ? Colors.grey[900] : Colors.white,
+            backgroundColor:
+                _settingsManager.isDarkMode ? Colors.grey[900] : Colors.white,
             title: Text(
               'Create Playlist',
               style: TextStyle(
-                color: _settingsManager.isDarkMode ? Colors.white : Colors.black,
+                color:
+                    _settingsManager.isDarkMode ? Colors.white : Colors.black,
               ),
             ),
             content: TextField(
               onChanged: (value) => playlistName = value,
               autofocus: true,
               style: TextStyle(
-                color: _settingsManager.isDarkMode ? Colors.white : Colors.black,
+                color:
+                    _settingsManager.isDarkMode ? Colors.white : Colors.black,
               ),
               decoration: InputDecoration(
                 hintText: 'Enter playlist name',
                 hintStyle: TextStyle(
-                  color: (_settingsManager.isDarkMode ? Colors.white : Colors.black).withOpacity(0.6),
+                  color: (_settingsManager.isDarkMode
+                          ? Colors.white
+                          : Colors.black)
+                      .withOpacity(0.6),
                 ),
                 enabledBorder: UnderlineInputBorder(
                   borderSide: BorderSide(
@@ -938,7 +967,10 @@ class _LibraryScreenState extends State<LibraryScreen> {
                 onPressed: () => Navigator.pop(context),
                 child: Text(
                   'Cancel',
-                  style: TextStyle(color: _settingsManager.isDarkMode ? Colors.white70 : Colors.black54),
+                  style: TextStyle(
+                      color: _settingsManager.isDarkMode
+                          ? Colors.white70
+                          : Colors.black54),
                 ),
               ),
               TextButton(
@@ -953,11 +985,13 @@ class _LibraryScreenState extends State<LibraryScreen> {
         );
 
         if (newPlaylistName != null && newPlaylistName.trim().isNotEmpty) {
-          final newPlaylist = await PlaylistManager.createPlaylist(newPlaylistName.trim());
+          final newPlaylist =
+              await PlaylistManager.createPlaylist(newPlaylistName.trim());
           await PlaylistManager.addSongToPlaylist(newPlaylist.id, song.path);
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Created playlist "${newPlaylistName}" and added "${song.title}"'),
+              content: Text(
+                  'Created playlist "${newPlaylistName}" and added "${song.title}"'),
               backgroundColor: _settingsManager.themeColor,
             ),
           );
@@ -970,7 +1004,8 @@ class _LibraryScreenState extends State<LibraryScreen> {
     final selectedPlaylist = await showDialog<Playlist>(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: _settingsManager.isDarkMode ? Colors.grey[900] : Colors.white,
+        backgroundColor:
+            _settingsManager.isDarkMode ? Colors.grey[900] : Colors.white,
         title: Text(
           'Add to Playlist',
           style: TextStyle(
@@ -1006,8 +1041,11 @@ class _LibraryScreenState extends State<LibraryScreen> {
                 title: Text(
                   playlist.name,
                   style: TextStyle(
-                    color: _settingsManager.isDarkMode ? Colors.white : Colors.black,
-                    fontWeight: alreadyInPlaylist ? FontWeight.bold : FontWeight.normal,
+                    color: _settingsManager.isDarkMode
+                        ? Colors.white
+                        : Colors.black,
+                    fontWeight:
+                        alreadyInPlaylist ? FontWeight.bold : FontWeight.normal,
                   ),
                 ),
                 subtitle: Text(
@@ -1017,7 +1055,10 @@ class _LibraryScreenState extends State<LibraryScreen> {
                   style: TextStyle(
                     color: alreadyInPlaylist
                         ? _settingsManager.themeColor
-                        : (_settingsManager.isDarkMode ? Colors.white : Colors.black).withOpacity(0.7),
+                        : (_settingsManager.isDarkMode
+                                ? Colors.white
+                                : Colors.black)
+                            .withOpacity(0.7),
                   ),
                 ),
                 trailing: alreadyInPlaylist
@@ -1035,7 +1076,10 @@ class _LibraryScreenState extends State<LibraryScreen> {
             onPressed: () => Navigator.pop(context),
             child: Text(
               'Cancel',
-              style: TextStyle(color: _settingsManager.isDarkMode ? Colors.white70 : Colors.black54),
+              style: TextStyle(
+                  color: _settingsManager.isDarkMode
+                      ? Colors.white70
+                      : Colors.black54),
             ),
           ),
         ],
@@ -1056,7 +1100,8 @@ class _LibraryScreenState extends State<LibraryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: _settingsManager.isDarkMode ? Colors.grey[900] : Colors.white,
+      backgroundColor:
+          _settingsManager.isDarkMode ? Colors.grey[900] : Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -1082,200 +1127,228 @@ class _LibraryScreenState extends State<LibraryScreen> {
               ),
             ),
           IconButton(
-            icon: Icon(Icons.refresh, color: _settingsManager.isDarkMode ? Colors.white : Colors.black),
+            icon: Icon(Icons.refresh,
+                color:
+                    _settingsManager.isDarkMode ? Colors.white : Colors.black),
             onPressed: _scanForMusicFiles,
           ),
         ],
       ),
-      body: isLoading 
-        ? Center(child: CircularProgressIndicator(color: _settingsManager.themeColor))
-        : SingleChildScrollView(
-            padding: EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-SizedBox(height: 0),
-                
-                if (musicFiles.isNotEmpty) ...[
-                  SizedBox(height: 32),
-                  Text(
-                    'Your Music (${musicFiles.length} songs)',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: _settingsManager.isDarkMode ? Colors.white : Colors.black,
+      body: isLoading
+          ? Center(
+              child:
+                  CircularProgressIndicator(color: _settingsManager.themeColor))
+          : SingleChildScrollView(
+              padding: EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: 0),
+                  if (musicFiles.isNotEmpty) ...[
+                    SizedBox(height: 32),
+                    Text(
+                      'Your Music (${musicFiles.length} songs)',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: _settingsManager.isDarkMode
+                            ? Colors.white
+                            : Colors.black,
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 16),
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemCount: musicFiles.length,
-                    itemBuilder: (context, index) {
-                      final song = musicFiles[index];
-                      final file = _cachedSongToFile(song);
-                      final fileName = song.title;
-                      
-                      return ListTile(
-                        leading: Container(
-                          width: 50,
-                          height: 50,
-                          decoration: BoxDecoration(
-                            color: _settingsManager.themeColor,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Icon(
-                            Icons.music_note,
-                            color: Colors.white,
-                          ),
-                        ),
-                        title: Text(
-                          fileName,
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            color: _settingsManager.isDarkMode ? Colors.white : Colors.black,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        subtitle: Text(
-                          song.path.split('/').last,
-                          style: TextStyle(
-                            color: _settingsManager.isDarkMode ? Colors.grey[400] : Colors.grey[600],
-                            fontSize: 12
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton(
-                              icon: Icon(
-                                _audioManager.isFavorite(song.path) ? Icons.favorite : Icons.favorite_border,
-                                color: _audioManager.isFavorite(song.path) ? Colors.red : Colors.grey,
-                              ),
-                              onPressed: () async {
-                                await _audioManager.toggleFavorite(song.path);
-                                setState(() {});
-                              },
+                    SizedBox(height: 16),
+                    ListView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemCount: musicFiles.length,
+                      itemBuilder: (context, index) {
+                        final song = musicFiles[index];
+                        final file = _cachedSongToFile(song);
+                        final fileName = song.title;
+
+                        return ListTile(
+                          leading: Container(
+                            width: 50,
+                            height: 50,
+                            decoration: BoxDecoration(
+                              color: _settingsManager.themeColor,
+                              borderRadius: BorderRadius.circular(8),
                             ),
-                            PopupMenuButton<String>(
-                              icon: Icon(
-                                Icons.more_vert,
-                                color: _settingsManager.isDarkMode ? Colors.white : Colors.black,
-                              ),
-                              onSelected: (value) async {
-                                if (value == 'add_to_playlist') {
-                                  await _showAddToPlaylistDialog(song);
-                                }
-                              },
-                              itemBuilder: (context) => [
-                                PopupMenuItem(
-                                  value: 'add_to_playlist',
-                                  child: Row(
-                                    children: [
-                                      Icon(Icons.playlist_add, color: _settingsManager.themeColor),
-                                      SizedBox(width: 8),
-                                      Text('Add to Playlist'),
-                                    ],
-                                  ),
+                            child: Icon(
+                              Icons.music_note,
+                              color: Colors.white,
+                            ),
+                          ),
+                          title: Text(
+                            fileName,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: _settingsManager.isDarkMode
+                                  ? Colors.white
+                                  : Colors.black,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          subtitle: Text(
+                            song.path.split('/').last,
+                            style: TextStyle(
+                                color: _settingsManager.isDarkMode
+                                    ? Colors.grey[400]
+                                    : Colors.grey[600],
+                                fontSize: 12),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                icon: Icon(
+                                  _audioManager.isFavorite(song.path)
+                                      ? Icons.favorite
+                                      : Icons.favorite_border,
+                                  color: _audioManager.isFavorite(song.path)
+                                      ? Colors.red
+                                      : Colors.grey,
                                 ),
-                              ],
-                            ),
-                            StreamBuilder<bool>(
-                              stream: _audioManager.player.playerStateStream.map((state) => _audioManager.isCurrentlyPlaying(song.path)),
-                              builder: (context, snapshot) {
-                                bool isCurrentlyPlaying = snapshot.data ?? false;
-                                return IconButton(
-                                  icon: Icon(
-                                    isCurrentlyPlaying ? Icons.pause : Icons.play_arrow,
-                                    color: _settingsManager.themeColor
-                                  ),
-                                  onPressed: () async {
-                                    if (isCurrentlyPlaying) {
-                                      await _audioManager.pause();
-                                    } else {
-                                      // Set up the current playlist for auto-play
-                                      final playlist = musicFiles.map((s) => s.path).toList();
-                                      _audioManager.setPlaylist(playlist, index);
-                                      await _audioManager.playFromFile(song.path);
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => NowPlayingScreenWithData(
-                                            songTitle: fileName,
-                                            artist: song.artist,
-                                            filePath: song.path,
-                                            allSongs: musicFiles.map(_cachedSongToFile).toList(),
-                                            currentIndex: index,
-                                          ),
-                                        ),
-                                      );
-                                    }
-                                  },
-                                );
-                              },
-                            ),
-                          ],
-                        ),
-                        onTap: () async {
-                          // Set up the current playlist for auto-play
-                          final playlist = musicFiles.map((s) => s.path).toList();
-                          _audioManager.setPlaylist(playlist, index);
-                          await _audioManager.playFromFile(song.path);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => NowPlayingScreenWithData(
-                                songTitle: fileName,
-                                artist: song.artist,
-                                filePath: song.path,
-                                allSongs: musicFiles.map(_cachedSongToFile).toList(),
-                                currentIndex: index,
+                                onPressed: () async {
+                                  await _audioManager.toggleFavorite(song.path);
+                                  setState(() {});
+                                },
                               ),
-                            ),
-                          );
-                        },
-                      );
-                    },
-                  ),
-                ],
-                
-                if (musicFiles.isEmpty && !isLoading) ...[
-                  SizedBox(height: 32),
-                  Center(
-                    child: Column(
-                      children: [
-                        Icon(
-                          Icons.music_off,
-                          size: 80,
-                          color: Colors.grey[300],
-                        ),
-                        SizedBox(height: 16),
-                        Text(
-                          'No music files found',
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: Colors.grey[600],
+                              PopupMenuButton<String>(
+                                icon: Icon(
+                                  Icons.more_vert,
+                                  color: _settingsManager.isDarkMode
+                                      ? Colors.white
+                                      : Colors.black,
+                                ),
+                                onSelected: (value) async {
+                                  if (value == 'add_to_playlist') {
+                                    await _showAddToPlaylistDialog(song);
+                                  }
+                                },
+                                itemBuilder: (context) => [
+                                  PopupMenuItem(
+                                    value: 'add_to_playlist',
+                                    child: Row(
+                                      children: [
+                                        Icon(Icons.playlist_add,
+                                            color: _settingsManager.themeColor),
+                                        SizedBox(width: 8),
+                                        Text('Add to Playlist'),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              StreamBuilder<bool>(
+                                stream: _audioManager.player.playerStateStream
+                                    .map((state) => _audioManager
+                                        .isCurrentlyPlaying(song.path)),
+                                builder: (context, snapshot) {
+                                  bool isCurrentlyPlaying =
+                                      snapshot.data ?? false;
+                                  return IconButton(
+                                    icon: Icon(
+                                        isCurrentlyPlaying
+                                            ? Icons.pause
+                                            : Icons.play_arrow,
+                                        color: _settingsManager.themeColor),
+                                    onPressed: () async {
+                                      if (isCurrentlyPlaying) {
+                                        await _audioManager.pause();
+                                      } else {
+                                        // Set up the current playlist for auto-play
+                                        final playlist = musicFiles
+                                            .map((s) => s.path)
+                                            .toList();
+                                        _audioManager.setPlaylist(
+                                            playlist, index);
+                                        await _audioManager
+                                            .playFromFile(song.path);
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                NowPlayingScreenWithData(
+                                              songTitle: fileName,
+                                              artist: song.artist,
+                                              filePath: song.path,
+                                              allSongs: musicFiles
+                                                  .map(_cachedSongToFile)
+                                                  .toList(),
+                                              currentIndex: index,
+                                            ),
+                                          ),
+                                        );
+                                      }
+                                    },
+                                  );
+                                },
+                              ),
+                            ],
                           ),
-                        ),
-                        SizedBox(height: 8),
-                        Text(
-                          'Place music files in your Music or Download folder',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey[500],
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
+                          onTap: () async {
+                            // Set up the current playlist for auto-play
+                            final playlist =
+                                musicFiles.map((s) => s.path).toList();
+                            _audioManager.setPlaylist(playlist, index);
+                            await _audioManager.playFromFile(song.path);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => NowPlayingScreenWithData(
+                                  songTitle: fileName,
+                                  artist: song.artist,
+                                  filePath: song.path,
+                                  allSongs: musicFiles
+                                      .map(_cachedSongToFile)
+                                      .toList(),
+                                  currentIndex: index,
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      },
                     ),
-                  ),
+                  ],
+                  if (musicFiles.isEmpty && !isLoading) ...[
+                    SizedBox(height: 32),
+                    Center(
+                      child: Column(
+                        children: [
+                          Icon(
+                            Icons.music_off,
+                            size: 80,
+                            color: Colors.grey[300],
+                          ),
+                          SizedBox(height: 16),
+                          Text(
+                            'No music files found',
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            'Place music files in your Music or Download folder',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey[500],
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ],
-              ],
+              ),
             ),
-          ),
     );
   }
 }
@@ -1301,10 +1374,10 @@ class _SearchScreenState extends State<SearchScreen> {
 
   Future<void> _loadMusicFiles() async {
     setState(() => isLoading = true);
-    
+
     try {
       List<Directory> musicDirs = [];
-      
+
       if (Platform.isAndroid) {
         Directory? extDir = await getExternalStorageDirectory();
         if (extDir != null) {
@@ -1315,7 +1388,7 @@ class _SearchScreenState extends State<SearchScreen> {
           ]);
         }
       }
-      
+
       List<FileSystemEntity> foundFiles = [];
       for (Directory dir in musicDirs) {
         if (await dir.exists()) {
@@ -1326,7 +1399,7 @@ class _SearchScreenState extends State<SearchScreen> {
           }
         }
       }
-      
+
       setState(() {
         allMusicFiles = foundFiles;
         filteredFiles = foundFiles;
@@ -1380,7 +1453,8 @@ class _SearchScreenState extends State<SearchScreen> {
           ),
         ),
       ),
-      backgroundColor: _settingsManager.isDarkMode ? Colors.grey[900] : Colors.white,
+      backgroundColor:
+          _settingsManager.isDarkMode ? Colors.grey[900] : Colors.white,
       body: Padding(
         padding: EdgeInsets.all(16),
         child: Column(
@@ -1389,16 +1463,21 @@ class _SearchScreenState extends State<SearchScreen> {
               controller: _searchController,
               onChanged: _filterSongs,
               style: TextStyle(
-                color: _settingsManager.isDarkMode ? Colors.black : Colors.black,
+                color:
+                    _settingsManager.isDarkMode ? Colors.black : Colors.black,
               ),
               decoration: InputDecoration(
                 hintText: 'Search songs, artists, albums...',
                 hintStyle: TextStyle(
-                  color: _settingsManager.isDarkMode ? Colors.grey[600] : Colors.grey[600],
+                  color: _settingsManager.isDarkMode
+                      ? Colors.grey[600]
+                      : Colors.grey[600],
                 ),
                 prefixIcon: Icon(Icons.search, color: Colors.grey),
                 filled: true,
-                fillColor: _settingsManager.isDarkMode ? Colors.white : Colors.grey[100],
+                fillColor: _settingsManager.isDarkMode
+                    ? Colors.white
+                    : Colors.grey[100],
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide.none,
@@ -1408,139 +1487,166 @@ class _SearchScreenState extends State<SearchScreen> {
             SizedBox(height: 20),
             Expanded(
               child: isLoading
-                ? Center(child: CircularProgressIndicator(color: _settingsManager.themeColor))
-                : filteredFiles.isEmpty
                   ? Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            _searchController.text.isEmpty ? Icons.search : Icons.music_off,
-                            size: 80,
-                            color: Colors.grey[300],
-                          ),
-                          SizedBox(height: 16),
-                          Text(
-                            _searchController.text.isEmpty 
-                              ? 'Search for music'
-                              : 'No songs found',
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: Colors.grey[600],
-                            ),
-                          ),
-                        ],
-                      ),
-                    )
-                  : ListView.builder(
-                      itemCount: filteredFiles.length,
-                      itemBuilder: (context, index) {
-                        final file = filteredFiles[index];
-                        final fileName = _getFileName(file.path);
-                        
-                        return ListTile(
-                          leading: Container(
-                            width: 50,
-                            height: 50,
-                            decoration: BoxDecoration(
-                              color: _settingsManager.themeColor,
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Icon(
-                              Icons.music_note,
-                              color: Colors.white,
-                            ),
-                          ),
-                          title: Text(
-                            fileName,
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              color: _settingsManager.isDarkMode ? Colors.white : Colors.black,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          subtitle: Text(
-                            file.path.split('/').last,
-                            style: TextStyle(
-                              color: _settingsManager.isDarkMode ? Colors.grey[400] : Colors.grey[600],
-                              fontSize: 12
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          trailing: Row(
-                            mainAxisSize: MainAxisSize.min,
+                      child: CircularProgressIndicator(
+                          color: _settingsManager.themeColor))
+                  : filteredFiles.isEmpty
+                      ? Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              IconButton(
-                                icon: Icon(
-                                  _audioManager.isFavorite(file.path) ? Icons.favorite : Icons.favorite_border,
-                                  color: _audioManager.isFavorite(file.path) ? Colors.red : Colors.grey,
-                                ),
-                                onPressed: () async {
-                                  await _audioManager.toggleFavorite(file.path);
-                                  setState(() {});
-                                },
+                              Icon(
+                                _searchController.text.isEmpty
+                                    ? Icons.search
+                                    : Icons.music_off,
+                                size: 80,
+                                color: Colors.grey[300],
                               ),
-                              StreamBuilder<bool>(
-                                stream: _audioManager.player.playerStateStream.map((state) => _audioManager.isCurrentlyPlaying(file.path)),
-                                builder: (context, snapshot) {
-                                  bool isCurrentlyPlaying = snapshot.data ?? false;
-                                  return IconButton(
-                                    icon: Icon(
-                                      isCurrentlyPlaying ? Icons.pause : Icons.play_arrow,
-                                      color: _settingsManager.themeColor
-                                    ),
-                                    onPressed: () async {
-                                      if (isCurrentlyPlaying) {
-                                        await _audioManager.pause();
-                                      } else {
-                                        // Set up the current playlist for auto-play
-                                        final playlist = allMusicFiles.map((f) => f.path).toList();
-                                        final currentIndex = allMusicFiles.indexOf(file);
-                                        _audioManager.setPlaylist(playlist, currentIndex);
-                                        await _audioManager.playFromFile(file.path);
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => NowPlayingScreenWithData(
-                                              songTitle: fileName,
-                                              artist: 'Unknown Artist',
-                                              filePath: file.path,
-                                              allSongs: allMusicFiles,
-                                              currentIndex: currentIndex,
-                                            ),
-                                          ),
-                                        );
-                                      }
-                                    },
-                                  );
-                                },
+                              SizedBox(height: 16),
+                              Text(
+                                _searchController.text.isEmpty
+                                    ? 'Search for music'
+                                    : 'No songs found',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  color: Colors.grey[600],
+                                ),
                               ),
                             ],
                           ),
-                          onTap: () async {
-                            // Set up the current playlist for auto-play
-                            final playlist = allMusicFiles.map((f) => f.path).toList();
-                            final currentIndex = allMusicFiles.indexOf(file);
-                            _audioManager.setPlaylist(playlist, currentIndex);
-                            await _audioManager.playFromFile(file.path);
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => NowPlayingScreenWithData(
-                                  songTitle: fileName,
-                                  artist: 'Unknown Artist',
-                                  filePath: file.path,
-                                  allSongs: allMusicFiles,
-                                  currentIndex: currentIndex,
+                        )
+                      : ListView.builder(
+                          itemCount: filteredFiles.length,
+                          itemBuilder: (context, index) {
+                            final file = filteredFiles[index];
+                            final fileName = _getFileName(file.path);
+
+                            return ListTile(
+                              leading: Container(
+                                width: 50,
+                                height: 50,
+                                decoration: BoxDecoration(
+                                  color: _settingsManager.themeColor,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Icon(
+                                  Icons.music_note,
+                                  color: Colors.white,
                                 ),
                               ),
+                              title: Text(
+                                fileName,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  color: _settingsManager.isDarkMode
+                                      ? Colors.white
+                                      : Colors.black,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              subtitle: Text(
+                                file.path.split('/').last,
+                                style: TextStyle(
+                                    color: _settingsManager.isDarkMode
+                                        ? Colors.grey[400]
+                                        : Colors.grey[600],
+                                    fontSize: 12),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              trailing: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  IconButton(
+                                    icon: Icon(
+                                      _audioManager.isFavorite(file.path)
+                                          ? Icons.favorite
+                                          : Icons.favorite_border,
+                                      color: _audioManager.isFavorite(file.path)
+                                          ? Colors.red
+                                          : Colors.grey,
+                                    ),
+                                    onPressed: () async {
+                                      await _audioManager
+                                          .toggleFavorite(file.path);
+                                      setState(() {});
+                                    },
+                                  ),
+                                  StreamBuilder<bool>(
+                                    stream: _audioManager
+                                        .player.playerStateStream
+                                        .map((state) => _audioManager
+                                            .isCurrentlyPlaying(file.path)),
+                                    builder: (context, snapshot) {
+                                      bool isCurrentlyPlaying =
+                                          snapshot.data ?? false;
+                                      return IconButton(
+                                        icon: Icon(
+                                            isCurrentlyPlaying
+                                                ? Icons.pause
+                                                : Icons.play_arrow,
+                                            color: _settingsManager.themeColor),
+                                        onPressed: () async {
+                                          if (isCurrentlyPlaying) {
+                                            await _audioManager.pause();
+                                          } else {
+                                            // Set up the current playlist for auto-play
+                                            final playlist = allMusicFiles
+                                                .map((f) => f.path)
+                                                .toList();
+                                            final currentIndex =
+                                                allMusicFiles.indexOf(file);
+                                            _audioManager.setPlaylist(
+                                                playlist, currentIndex);
+                                            await _audioManager
+                                                .playFromFile(file.path);
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    NowPlayingScreenWithData(
+                                                  songTitle: fileName,
+                                                  artist: 'Unknown Artist',
+                                                  filePath: file.path,
+                                                  allSongs: allMusicFiles,
+                                                  currentIndex: currentIndex,
+                                                ),
+                                              ),
+                                            );
+                                          }
+                                        },
+                                      );
+                                    },
+                                  ),
+                                ],
+                              ),
+                              onTap: () async {
+                                // Set up the current playlist for auto-play
+                                final playlist =
+                                    allMusicFiles.map((f) => f.path).toList();
+                                final currentIndex =
+                                    allMusicFiles.indexOf(file);
+                                _audioManager.setPlaylist(
+                                    playlist, currentIndex);
+                                await _audioManager.playFromFile(file.path);
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        NowPlayingScreenWithData(
+                                      songTitle: fileName,
+                                      artist: 'Unknown Artist',
+                                      filePath: file.path,
+                                      allSongs: allMusicFiles,
+                                      currentIndex: currentIndex,
+                                    ),
+                                  ),
+                                );
+                              },
                             );
                           },
-                        );
-                      },
-                    ),
+                        ),
             ),
           ],
         ),
@@ -1778,7 +1884,8 @@ class NowPlayingScreenWithData extends StatefulWidget {
   });
 
   @override
-  _NowPlayingScreenWithDataState createState() => _NowPlayingScreenWithDataState();
+  _NowPlayingScreenWithDataState createState() =>
+      _NowPlayingScreenWithDataState();
 }
 
 class _NowPlayingScreenWithDataState extends State<NowPlayingScreenWithData> {
@@ -1818,11 +1925,11 @@ class _NowPlayingScreenWithDataState extends State<NowPlayingScreenWithData> {
     _audioManager.player.durationStream.listen((d) {
       if (mounted) setState(() => duration = d ?? Duration.zero);
     });
-    
+
     _audioManager.player.positionStream.listen((p) {
       if (mounted) setState(() => position = p);
     });
-    
+
     _audioManager.player.playerStateStream.listen((state) {
       if (mounted) setState(() => isPlaying = state.playing);
     });
@@ -1836,7 +1943,9 @@ class _NowPlayingScreenWithDataState extends State<NowPlayingScreenWithData> {
   }
 
   Future<void> _playCurrentSong() async {
-    if (playlist.isNotEmpty && currentIndex >= 0 && currentIndex < playlist.length) {
+    if (playlist.isNotEmpty &&
+        currentIndex >= 0 &&
+        currentIndex < playlist.length) {
       final file = playlist[currentIndex];
       await _audioManager.playFromFile(file.path);
       setState(() {
@@ -1924,8 +2033,9 @@ class _NowPlayingScreenWithDataState extends State<NowPlayingScreenWithData> {
     try {
       final Tag? tag = await AudioTags.read(filePath);
       setState(() {
-        albumArt = tag?.pictures.isNotEmpty == true ? tag!.pictures.first.bytes : null;
-        currentArtist = tag?.artist ?? 'Unknown Artist';
+        albumArt =
+            tag?.pictures.isNotEmpty == true ? tag!.pictures.first.bytes : null;
+        currentArtist = tag?.trackArtist ?? 'Unknown Artist';
       });
     } catch (e) {
       setState(() {
@@ -1941,10 +2051,11 @@ class _NowPlayingScreenWithDataState extends State<NowPlayingScreenWithData> {
         ? position.inMilliseconds / duration.inMilliseconds
         : 0.0;
     final SettingsManager _settingsManager = SettingsManager();
-    final Color themeColor = Colors.blue; // Default theme color
+    final Color themeColor = _settingsManager.themeColor;
 
     return Scaffold(
-      backgroundColor: _settingsManager.isDarkMode ? Colors.black : Colors.white,
+      backgroundColor:
+          _settingsManager.isDarkMode ? Colors.black : Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -2010,60 +2121,64 @@ class _NowPlayingScreenWithDataState extends State<NowPlayingScreenWithData> {
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             image: albumArt != null
-                              ? DecorationImage(
-                                  image: MemoryImage(albumArt!),
-                                  fit: BoxFit.cover,
+                                ? DecorationImage(
+                                    image: MemoryImage(albumArt!),
+                                    fit: BoxFit.cover,
+                                  )
+                                : null,
+                            gradient: albumArt == null
+                                ? LinearGradient(
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                    colors: [
+                                      themeColor.withOpacity(0.8),
+                                      themeColor,
+                                      themeColor.withOpacity(0.6),
+                                    ],
+                                  )
+                                : null,
+                          ),
+                          child: albumArt == null
+                              ? Stack(
+                                  alignment: Alignment.center,
+                                  children: [
+                                    // Vinyl texture rings when no album art
+                                    Container(
+                                      width: 200,
+                                      height: 200,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        border: Border.all(
+                                          color: Colors.black.withOpacity(0.1),
+                                          width: 1,
+                                        ),
+                                      ),
+                                    ),
+                                    Container(
+                                      width: 160,
+                                      height: 160,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        border: Border.all(
+                                          color: Colors.black.withOpacity(0.1),
+                                          width: 1,
+                                        ),
+                                      ),
+                                    ),
+                                    Container(
+                                      width: 120,
+                                      height: 120,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        border: Border.all(
+                                          color: Colors.black.withOpacity(0.1),
+                                          width: 1,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 )
                               : null,
-                            gradient: albumArt == null ? LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: [
-                                themeColor.withOpacity(0.8),
-                                themeColor,
-                                themeColor.withOpacity(0.6),
-                              ],
-                            ) : null,
-                          ),
-                          child: albumArt == null ? Stack(
-                            alignment: Alignment.center,
-                            children: [
-                              // Vinyl texture rings when no album art
-                              Container(
-                                width: 200,
-                                height: 200,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: Colors.black.withOpacity(0.1),
-                                    width: 1,
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                width: 160,
-                                height: 160,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: Colors.black.withOpacity(0.1),
-                                    width: 1,
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                width: 120,
-                                height: 120,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: Colors.black.withOpacity(0.1),
-                                    width: 1,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ) : null,
                         ),
                         // Center label/hole (always visible)
                         Container(
@@ -2072,8 +2187,10 @@ class _NowPlayingScreenWithDataState extends State<NowPlayingScreenWithData> {
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             color: albumArt != null
-                              ? Colors.black.withOpacity(0.7)
-                              : (_settingsManager.isDarkMode ? Colors.grey[900] : Colors.white),
+                                ? Colors.black.withOpacity(0.7)
+                                : (_settingsManager.isDarkMode
+                                    ? Colors.grey[900]
+                                    : Colors.white),
                             boxShadow: [
                               BoxShadow(
                                 color: Colors.black.withOpacity(0.2),
@@ -2120,7 +2237,8 @@ class _NowPlayingScreenWithDataState extends State<NowPlayingScreenWithData> {
           Text(
             currentArtist,
             style: TextStyle(
-              color: (_settingsManager.isDarkMode ? Colors.white : Colors.black).withOpacity(0.7),
+              color: (_settingsManager.isDarkMode ? Colors.white : Colors.black)
+                  .withOpacity(0.7),
               fontSize: 18,
             ),
             textAlign: TextAlign.center,
@@ -2136,14 +2254,20 @@ class _NowPlayingScreenWithDataState extends State<NowPlayingScreenWithData> {
                     Text(
                       _formatDuration(position),
                       style: TextStyle(
-                        color: (_settingsManager.isDarkMode ? Colors.white : Colors.black).withOpacity(0.7),
+                        color: (_settingsManager.isDarkMode
+                                ? Colors.white
+                                : Colors.black)
+                            .withOpacity(0.7),
                         fontSize: 14,
                       ),
                     ),
                     Text(
                       _formatDuration(duration),
                       style: TextStyle(
-                        color: (_settingsManager.isDarkMode ? Colors.white : Colors.black).withOpacity(0.7),
+                        color: (_settingsManager.isDarkMode
+                                ? Colors.white
+                                : Colors.black)
+                            .withOpacity(0.7),
                         fontSize: 14,
                       ),
                     ),
@@ -2156,7 +2280,10 @@ class _NowPlayingScreenWithDataState extends State<NowPlayingScreenWithData> {
                     thumbShape: RoundSliderThumbShape(enabledThumbRadius: 8),
                     overlayShape: RoundSliderOverlayShape(overlayRadius: 16),
                     activeTrackColor: themeColor,
-                    inactiveTrackColor: (_settingsManager.isDarkMode ? Colors.white : Colors.black).withOpacity(0.3),
+                    inactiveTrackColor: (_settingsManager.isDarkMode
+                            ? Colors.white
+                            : Colors.black)
+                        .withOpacity(0.3),
                     thumbColor: themeColor,
                   ),
                   child: Slider(
@@ -2179,7 +2306,12 @@ class _NowPlayingScreenWithDataState extends State<NowPlayingScreenWithData> {
               IconButton(
                 icon: Icon(
                   Icons.shuffle,
-                  color: _audioManager.isShuffleOn ? themeColor : (_settingsManager.isDarkMode ? Colors.white : Colors.black).withOpacity(0.7),
+                  color: _audioManager.isShuffleOn
+                      ? themeColor
+                      : (_settingsManager.isDarkMode
+                              ? Colors.white
+                              : Colors.black)
+                          .withOpacity(0.7),
                   size: 28,
                 ),
                 onPressed: () {
@@ -2193,8 +2325,15 @@ class _NowPlayingScreenWithDataState extends State<NowPlayingScreenWithData> {
               ),
               IconButton(
                 icon: Icon(
-                  _audioManager.loopMode == LoopMode.one ? Icons.repeat_one : Icons.repeat,
-                  color: _audioManager.isRepeatOn ? themeColor : (_settingsManager.isDarkMode ? Colors.white : Colors.black).withOpacity(0.7),
+                  _audioManager.loopMode == LoopMode.one
+                      ? Icons.repeat_one
+                      : Icons.repeat,
+                  color: _audioManager.isRepeatOn
+                      ? themeColor
+                      : (_settingsManager.isDarkMode
+                              ? Colors.white
+                              : Colors.black)
+                          .withOpacity(0.7),
                   size: 28,
                 ),
                 onPressed: () {
@@ -2210,7 +2349,11 @@ class _NowPlayingScreenWithDataState extends State<NowPlayingScreenWithData> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               IconButton(
-                icon: Icon(Icons.skip_previous, color: _settingsManager.isDarkMode ? Colors.white : Colors.black, size: 40),
+                icon: Icon(Icons.skip_previous,
+                    color: _settingsManager.isDarkMode
+                        ? Colors.white
+                        : Colors.black,
+                    size: 40),
                 onPressed: _playPrevious,
               ),
               SizedBox(width: 20),
@@ -2236,202 +2379,14 @@ class _NowPlayingScreenWithDataState extends State<NowPlayingScreenWithData> {
               ),
               SizedBox(width: 20),
               IconButton(
-                icon: Icon(Icons.skip_next, color: _settingsManager.isDarkMode ? Colors.white : Colors.black, size: 40),
+                icon: Icon(Icons.skip_next,
+                    color: _settingsManager.isDarkMode
+                        ? Colors.white
+                        : Colors.black,
+                    size: 40),
                 onPressed: _playNext,
               ),
             ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class AlbumDetailScreen extends StatelessWidget {
-  final Album album;
-  
-  AlbumDetailScreen(this.album);
-
-  final List<Song> songs = [
-    Song('Nikes', '5:14'),
-    Song('Ivy', '4:09'),
-    Song('Pink + White', '3:04'),
-    Song('Be Yourself', '1:17'),
-    Song('Solo', '4:17'),
-    Song('Skyline To', '3:05'),
-    Song('Self Control', '4:09'),
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: Colors.black),
-          onPressed: () => Navigator.pop(context),
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.more_horiz, color: Colors.black),
-            onPressed: () {},
-          ),
-        ],
-      ),
-      body: Column(
-        children: [
-          Container(
-            height: 200,
-            width: 200,
-            margin: EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: album.color,
-              borderRadius: BorderRadius.circular(12),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.2),
-                  blurRadius: 20,
-                  offset: Offset(0, 8),
-                ),
-              ],
-            ),
-            child: Center(
-              child: Text(
-                album.title,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ),
-          Text(
-            album.title,
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          SizedBox(height: 4),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.person, size: 16, color: Colors.grey),
-              SizedBox(width: 4),
-              Text(
-                '${album.artist} • Psychedelic Pop • Aug 20, 2016',
-                style: TextStyle(
-                  color: Colors.grey[600],
-                  fontSize: 14,
-                ),
-              ),
-              SizedBox(width: 8),
-              Icon(Icons.star, size: 16, color: Colors.grey),
-              Text(
-                '8.8',
-                style: TextStyle(
-                  color: Colors.grey[600],
-                  fontSize: 14,
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
-                decoration: BoxDecoration(
-                  color: Colors.black,
-                  borderRadius: BorderRadius.circular(25),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.play_arrow, color: Colors.white),
-                    SizedBox(width: 8),
-                    Text(
-                      'Play',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(width: 20),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey[300]!),
-                  borderRadius: BorderRadius.circular(25),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.shuffle, color: Colors.black),
-                    SizedBox(width: 8),
-                    Text(
-                      'Shuffle',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 30),
-          Expanded(
-            child: ListView.builder(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              itemCount: songs.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  contentPadding: EdgeInsets.zero,
-                  title: Text(
-                    songs[index].title,
-                    style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        songs[index].duration,
-                        style: TextStyle(
-                          color: Colors.grey[600],
-                          fontSize: 14,
-                        ),
-                      ),
-                      SizedBox(width: 8),
-                      Icon(Icons.more_horiz, color: Colors.grey),
-                    ],
-                  ),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => NowPlayingScreenWithData(
-                          songTitle: songs[index].title,
-                          artist: album.artist,
-                          allSongs: [],
-                          currentIndex: 0,
-                        ),
-                      ),
-                    );
-                  },
-                );
-              },
-            ),
           ),
         ],
       ),
@@ -2469,7 +2424,8 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
     final result = await showDialog<String>(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: _settingsManager.isDarkMode ? Colors.grey[900] : Colors.white,
+        backgroundColor:
+            _settingsManager.isDarkMode ? Colors.grey[900] : Colors.white,
         title: Text(
           'Create Playlist',
           style: TextStyle(
@@ -2484,7 +2440,8 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
           decoration: InputDecoration(
             hintText: 'Enter playlist name',
             hintStyle: TextStyle(
-              color: (_settingsManager.isDarkMode ? Colors.white : Colors.black).withOpacity(0.6),
+              color: (_settingsManager.isDarkMode ? Colors.white : Colors.black)
+                  .withOpacity(0.6),
             ),
             enabledBorder: UnderlineInputBorder(
               borderSide: BorderSide(
@@ -2504,7 +2461,10 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
             onPressed: () => Navigator.pop(context),
             child: Text(
               'Cancel',
-              style: TextStyle(color: _settingsManager.isDarkMode ? Colors.white70 : Colors.black54),
+              style: TextStyle(
+                  color: _settingsManager.isDarkMode
+                      ? Colors.white70
+                      : Colors.black54),
             ),
           ),
           TextButton(
@@ -2534,7 +2494,8 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: _settingsManager.isDarkMode ? Colors.grey[900] : Colors.white,
+        backgroundColor:
+            _settingsManager.isDarkMode ? Colors.grey[900] : Colors.white,
         title: Text(
           'Delete Playlist',
           style: TextStyle(
@@ -2552,7 +2513,10 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
             onPressed: () => Navigator.pop(context, false),
             child: Text(
               'Cancel',
-              style: TextStyle(color: _settingsManager.isDarkMode ? Colors.white70 : Colors.black54),
+              style: TextStyle(
+                  color: _settingsManager.isDarkMode
+                      ? Colors.white70
+                      : Colors.black54),
             ),
           ),
           TextButton(
@@ -2581,7 +2545,8 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: _settingsManager.isDarkMode ? Colors.black : Colors.white,
+      backgroundColor:
+          _settingsManager.isDarkMode ? Colors.black : Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -2595,7 +2560,9 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.add, color: _settingsManager.isDarkMode ? Colors.white : Colors.black),
+            icon: Icon(Icons.add,
+                color:
+                    _settingsManager.isDarkMode ? Colors.white : Colors.black),
             onPressed: _showCreatePlaylistDialog,
           ),
         ],
@@ -2603,7 +2570,8 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
       body: _isLoading
           ? Center(
               child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(_settingsManager.themeColor),
+                valueColor:
+                    AlwaysStoppedAnimation<Color>(_settingsManager.themeColor),
               ),
             )
           : RefreshIndicator(
@@ -2631,18 +2599,25 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                       'Recently Played',
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
-                        color: _settingsManager.isDarkMode ? Colors.white : Colors.black,
+                        color: _settingsManager.isDarkMode
+                            ? Colors.white
+                            : Colors.black,
                       ),
                     ),
                     subtitle: Text(
                       'Auto-generated • ${AudioManager().recentlyPlayedPaths.length} songs',
                       style: TextStyle(
-                        color: (_settingsManager.isDarkMode ? Colors.white : Colors.black).withOpacity(0.7),
+                        color: (_settingsManager.isDarkMode
+                                ? Colors.white
+                                : Colors.black)
+                            .withOpacity(0.7),
                       ),
                     ),
                     trailing: Icon(
                       Icons.chevron_right,
-                      color: _settingsManager.isDarkMode ? Colors.white : Colors.black,
+                      color: _settingsManager.isDarkMode
+                          ? Colors.white
+                          : Colors.black,
                     ),
                     onTap: () {
                       Navigator.push(
@@ -2672,18 +2647,25 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                       'Favorites',
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
-                        color: _settingsManager.isDarkMode ? Colors.white : Colors.black,
+                        color: _settingsManager.isDarkMode
+                            ? Colors.white
+                            : Colors.black,
                       ),
                     ),
                     subtitle: Text(
                       'Your liked songs • ${AudioManager().favoritePaths.length} songs',
                       style: TextStyle(
-                        color: (_settingsManager.isDarkMode ? Colors.white : Colors.black).withOpacity(0.7),
+                        color: (_settingsManager.isDarkMode
+                                ? Colors.white
+                                : Colors.black)
+                            .withOpacity(0.7),
                       ),
                     ),
                     trailing: Icon(
                       Icons.chevron_right,
-                      color: _settingsManager.isDarkMode ? Colors.white : Colors.black,
+                      color: _settingsManager.isDarkMode
+                          ? Colors.white
+                          : Colors.black,
                     ),
                     onTap: () {
                       Navigator.push(
@@ -2701,77 +2683,91 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
-                        color: _settingsManager.isDarkMode ? Colors.white : Colors.black,
+                        color: _settingsManager.isDarkMode
+                            ? Colors.white
+                            : Colors.black,
                       ),
                     ),
                     SizedBox(height: 16),
                   ],
                   // User-created playlists
-                  ..._userPlaylists.map((playlist) => Padding(
-                        padding: EdgeInsets.only(bottom: 12),
-                        child: ListTile(
-                          leading: Container(
-                            width: 50,
-                            height: 50,
-                            decoration: BoxDecoration(
-                              color: _settingsManager.themeColor.withOpacity(0.2),
-                              borderRadius: BorderRadius.circular(8),
-                              border: Border.all(
-                                color: _settingsManager.themeColor.withOpacity(0.5),
-                                width: 1,
-                              ),
-                            ),
-                            child: Icon(
-                              Icons.queue_music,
-                              color: _settingsManager.themeColor,
-                            ),
-                          ),
-                          title: Text(
-                            playlist.name,
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              color: _settingsManager.isDarkMode ? Colors.white : Colors.black,
-                            ),
-                          ),
-                          subtitle: Text(
-                            '${playlist.songPaths.length} songs',
-                            style: TextStyle(
-                              color: (_settingsManager.isDarkMode ? Colors.white : Colors.black).withOpacity(0.7),
-                            ),
-                          ),
-                          trailing: PopupMenuButton<String>(
-                            icon: Icon(
-                              Icons.more_vert,
-                              color: _settingsManager.isDarkMode ? Colors.white : Colors.black,
-                            ),
-                            onSelected: (value) {
-                              if (value == 'delete') {
-                                _deletePlaylist(playlist);
-                              }
-                            },
-                            itemBuilder: (context) => [
-                              PopupMenuItem(
-                                value: 'delete',
-                                child: Row(
-                                  children: [
-                                    Icon(Icons.delete, color: Colors.red),
-                                    SizedBox(width: 8),
-                                    Text('Delete'),
-                                  ],
+                  ..._userPlaylists
+                      .map((playlist) => Padding(
+                            padding: EdgeInsets.only(bottom: 12),
+                            child: ListTile(
+                              leading: Container(
+                                width: 50,
+                                height: 50,
+                                decoration: BoxDecoration(
+                                  color: _settingsManager.themeColor
+                                      .withOpacity(0.2),
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(
+                                    color: _settingsManager.themeColor
+                                        .withOpacity(0.5),
+                                    width: 1,
+                                  ),
+                                ),
+                                child: Icon(
+                                  Icons.queue_music,
+                                  color: _settingsManager.themeColor,
                                 ),
                               ),
-                            ],
-                          ),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => PlaylistDetailScreen(playlist: playlist),
+                              title: Text(
+                                playlist.name,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  color: _settingsManager.isDarkMode
+                                      ? Colors.white
+                                      : Colors.black,
+                                ),
                               ),
-                            ).then((_) => _loadPlaylists());
-                          },
-                        ),
-                      )).toList(),
+                              subtitle: Text(
+                                '${playlist.songPaths.length} songs',
+                                style: TextStyle(
+                                  color: (_settingsManager.isDarkMode
+                                          ? Colors.white
+                                          : Colors.black)
+                                      .withOpacity(0.7),
+                                ),
+                              ),
+                              trailing: PopupMenuButton<String>(
+                                icon: Icon(
+                                  Icons.more_vert,
+                                  color: _settingsManager.isDarkMode
+                                      ? Colors.white
+                                      : Colors.black,
+                                ),
+                                onSelected: (value) {
+                                  if (value == 'delete') {
+                                    _deletePlaylist(playlist);
+                                  }
+                                },
+                                itemBuilder: (context) => [
+                                  PopupMenuItem(
+                                    value: 'delete',
+                                    child: Row(
+                                      children: [
+                                        Icon(Icons.delete, color: Colors.red),
+                                        SizedBox(width: 8),
+                                        Text('Delete'),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => PlaylistDetailScreen(
+                                        playlist: playlist),
+                                  ),
+                                ).then((_) => _loadPlaylists());
+                              },
+                            ),
+                          ))
+                      .toList(),
                   if (_userPlaylists.isEmpty)
                     Padding(
                       padding: EdgeInsets.only(top: 60),
@@ -2780,7 +2776,10 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                           Icon(
                             Icons.queue_music,
                             size: 80,
-                            color: (_settingsManager.isDarkMode ? Colors.white : Colors.black).withOpacity(0.3),
+                            color: (_settingsManager.isDarkMode
+                                    ? Colors.white
+                                    : Colors.black)
+                                .withOpacity(0.3),
                           ),
                           SizedBox(height: 16),
                           Text(
@@ -2788,7 +2787,10 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.w500,
-                              color: (_settingsManager.isDarkMode ? Colors.white : Colors.black).withOpacity(0.6),
+                              color: (_settingsManager.isDarkMode
+                                      ? Colors.white
+                                      : Colors.black)
+                                  .withOpacity(0.6),
                             ),
                           ),
                           SizedBox(height: 8),
@@ -2796,7 +2798,10 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                             'Tap the + button to create your first playlist',
                             style: TextStyle(
                               fontSize: 14,
-                              color: (_settingsManager.isDarkMode ? Colors.white : Colors.black).withOpacity(0.5),
+                              color: (_settingsManager.isDarkMode
+                                      ? Colors.white
+                                      : Colors.black)
+                                  .withOpacity(0.5),
                             ),
                             textAlign: TextAlign.center,
                           ),
@@ -2916,7 +2921,8 @@ class _PlaylistDetailScreenState extends State<PlaylistDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: _settingsManager.isDarkMode ? Colors.black : Colors.white,
+      backgroundColor:
+          _settingsManager.isDarkMode ? Colors.black : Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -2948,7 +2954,8 @@ class _PlaylistDetailScreenState extends State<PlaylistDetailScreen> {
       body: _isLoading
           ? Center(
               child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(_settingsManager.themeColor),
+                valueColor:
+                    AlwaysStoppedAnimation<Color>(_settingsManager.themeColor),
               ),
             )
           : Column(
@@ -2985,7 +2992,9 @@ class _PlaylistDetailScreenState extends State<PlaylistDetailScreen> {
                               style: TextStyle(
                                 fontSize: 24,
                                 fontWeight: FontWeight.bold,
-                                color: _settingsManager.isDarkMode ? Colors.white : Colors.black,
+                                color: _settingsManager.isDarkMode
+                                    ? Colors.white
+                                    : Colors.black,
                               ),
                             ),
                             SizedBox(height: 8),
@@ -2993,17 +3002,23 @@ class _PlaylistDetailScreenState extends State<PlaylistDetailScreen> {
                               '${_songs.length} songs',
                               style: TextStyle(
                                 fontSize: 16,
-                                color: (_settingsManager.isDarkMode ? Colors.white : Colors.black).withOpacity(0.7),
+                                color: (_settingsManager.isDarkMode
+                                        ? Colors.white
+                                        : Colors.black)
+                                    .withOpacity(0.7),
                               ),
                             ),
                             if (_songs.isNotEmpty) ...[
                               SizedBox(height: 16),
                               ElevatedButton.icon(
                                 onPressed: _playPlaylist,
-                                icon: Icon(Icons.play_arrow, color: Colors.white),
+                                icon:
+                                    Icon(Icons.play_arrow, color: Colors.white),
                                 label: Text(
                                   'Play',
-                                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold),
                                 ),
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: _settingsManager.themeColor,
@@ -3029,7 +3044,10 @@ class _PlaylistDetailScreenState extends State<PlaylistDetailScreen> {
                               Icon(
                                 Icons.music_note,
                                 size: 80,
-                                color: (_settingsManager.isDarkMode ? Colors.white : Colors.black).withOpacity(0.3),
+                                color: (_settingsManager.isDarkMode
+                                        ? Colors.white
+                                        : Colors.black)
+                                    .withOpacity(0.3),
                               ),
                               SizedBox(height: 16),
                               Text(
@@ -3037,7 +3055,10 @@ class _PlaylistDetailScreenState extends State<PlaylistDetailScreen> {
                                 style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.w500,
-                                  color: (_settingsManager.isDarkMode ? Colors.white : Colors.black).withOpacity(0.6),
+                                  color: (_settingsManager.isDarkMode
+                                          ? Colors.white
+                                          : Colors.black)
+                                      .withOpacity(0.6),
                                 ),
                               ),
                               SizedBox(height: 8),
@@ -3045,7 +3066,10 @@ class _PlaylistDetailScreenState extends State<PlaylistDetailScreen> {
                                 'Tap the + button to add songs',
                                 style: TextStyle(
                                   fontSize: 14,
-                                  color: (_settingsManager.isDarkMode ? Colors.white : Colors.black).withOpacity(0.5),
+                                  color: (_settingsManager.isDarkMode
+                                          ? Colors.white
+                                          : Colors.black)
+                                      .withOpacity(0.5),
                                 ),
                               ),
                             ],
@@ -3060,7 +3084,8 @@ class _PlaylistDetailScreenState extends State<PlaylistDetailScreen> {
                                 width: 50,
                                 height: 50,
                                 decoration: BoxDecoration(
-                                  color: _settingsManager.themeColor.withOpacity(0.1),
+                                  color: _settingsManager.themeColor
+                                      .withOpacity(0.1),
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 child: Icon(
@@ -3072,7 +3097,9 @@ class _PlaylistDetailScreenState extends State<PlaylistDetailScreen> {
                                 song.title,
                                 style: TextStyle(
                                   fontWeight: FontWeight.w600,
-                                  color: _settingsManager.isDarkMode ? Colors.white : Colors.black,
+                                  color: _settingsManager.isDarkMode
+                                      ? Colors.white
+                                      : Colors.black,
                                 ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
@@ -3080,7 +3107,10 @@ class _PlaylistDetailScreenState extends State<PlaylistDetailScreen> {
                               subtitle: Text(
                                 song.artist,
                                 style: TextStyle(
-                                  color: (_settingsManager.isDarkMode ? Colors.white : Colors.black).withOpacity(0.7),
+                                  color: (_settingsManager.isDarkMode
+                                          ? Colors.white
+                                          : Colors.black)
+                                      .withOpacity(0.7),
                                 ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
@@ -3088,7 +3118,9 @@ class _PlaylistDetailScreenState extends State<PlaylistDetailScreen> {
                               trailing: PopupMenuButton<String>(
                                 icon: Icon(
                                   Icons.more_vert,
-                                  color: _settingsManager.isDarkMode ? Colors.white : Colors.black,
+                                  color: _settingsManager.isDarkMode
+                                      ? Colors.white
+                                      : Colors.black,
                                 ),
                                 onSelected: (value) {
                                   if (value == 'remove') {
@@ -3100,7 +3132,8 @@ class _PlaylistDetailScreenState extends State<PlaylistDetailScreen> {
                                     value: 'remove',
                                     child: Row(
                                       children: [
-                                        Icon(Icons.remove_circle, color: Colors.red),
+                                        Icon(Icons.remove_circle,
+                                            color: Colors.red),
                                         SizedBox(width: 8),
                                         Text('Remove from playlist'),
                                       ],
@@ -3113,11 +3146,14 @@ class _PlaylistDetailScreenState extends State<PlaylistDetailScreen> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => NowPlayingScreenWithData(
+                                    builder: (context) =>
+                                        NowPlayingScreenWithData(
                                       songTitle: song.title,
                                       artist: song.artist,
                                       filePath: song.path,
-                                      allSongs: _songs.map((s) => File(s.path)).toList(),
+                                      allSongs: _songs
+                                          .map((s) => File(s.path))
+                                          .toList(),
                                       currentIndex: index,
                                     ),
                                   ),
@@ -3159,11 +3195,13 @@ class _AddSongsDialogState extends State<AddSongsDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      backgroundColor: widget.settingsManager.isDarkMode ? Colors.grey[900] : Colors.white,
+      backgroundColor:
+          widget.settingsManager.isDarkMode ? Colors.grey[900] : Colors.white,
       title: Text(
         'Add Songs',
         style: TextStyle(
-          color: widget.settingsManager.isDarkMode ? Colors.white : Colors.black,
+          color:
+              widget.settingsManager.isDarkMode ? Colors.white : Colors.black,
         ),
       ),
       content: Container(
@@ -3174,22 +3212,29 @@ class _AddSongsDialogState extends State<AddSongsDialog> {
             TextField(
               onChanged: (value) => setState(() => _searchQuery = value),
               style: TextStyle(
-                color: widget.settingsManager.isDarkMode ? Colors.white : Colors.black,
+                color: widget.settingsManager.isDarkMode
+                    ? Colors.white
+                    : Colors.black,
               ),
               decoration: InputDecoration(
                 hintText: 'Search songs...',
                 hintStyle: TextStyle(
-                  color: (widget.settingsManager.isDarkMode ? Colors.white : Colors.black).withOpacity(0.6),
+                  color: (widget.settingsManager.isDarkMode
+                          ? Colors.white
+                          : Colors.black)
+                      .withOpacity(0.6),
                 ),
                 prefixIcon: Icon(
                   Icons.search,
                   color: widget.settingsManager.themeColor,
                 ),
                 enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: widget.settingsManager.themeColor),
+                  borderSide:
+                      BorderSide(color: widget.settingsManager.themeColor),
                 ),
                 focusedBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: widget.settingsManager.themeColor, width: 2),
+                  borderSide: BorderSide(
+                      color: widget.settingsManager.themeColor, width: 2),
                 ),
               ),
             ),
@@ -3214,7 +3259,9 @@ class _AddSongsDialogState extends State<AddSongsDialog> {
                     title: Text(
                       song.title,
                       style: TextStyle(
-                        color: widget.settingsManager.isDarkMode ? Colors.white : Colors.black,
+                        color: widget.settingsManager.isDarkMode
+                            ? Colors.white
+                            : Colors.black,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -3222,7 +3269,10 @@ class _AddSongsDialogState extends State<AddSongsDialog> {
                     subtitle: Text(
                       song.artist,
                       style: TextStyle(
-                        color: (widget.settingsManager.isDarkMode ? Colors.white : Colors.black).withOpacity(0.7),
+                        color: (widget.settingsManager.isDarkMode
+                                ? Colors.white
+                                : Colors.black)
+                            .withOpacity(0.7),
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -3241,7 +3291,9 @@ class _AddSongsDialogState extends State<AddSongsDialog> {
           child: Text(
             'Cancel',
             style: TextStyle(
-              color: widget.settingsManager.isDarkMode ? Colors.white70 : Colors.black54,
+              color: widget.settingsManager.isDarkMode
+                  ? Colors.white70
+                  : Colors.black54,
             ),
           ),
         ),
@@ -3254,7 +3306,9 @@ class _AddSongsDialogState extends State<AddSongsDialog> {
             style: TextStyle(
               color: _selectedSongs.isNotEmpty
                   ? widget.settingsManager.themeColor
-                  : (widget.settingsManager.isDarkMode ? Colors.white70 : Colors.black54),
+                  : (widget.settingsManager.isDarkMode
+                      ? Colors.white70
+                      : Colors.black54),
             ),
           ),
         ),
@@ -3310,7 +3364,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-
   Widget _buildDarkModeItem() {
     return ListTile(
       leading: Icon(Icons.dark_mode, color: _settingsManager.themeColor),
@@ -3342,7 +3395,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget _buildMusicFoldersItem() {
     return ListTile(
       leading: Icon(Icons.folder, color: _settingsManager.themeColor),
-      title: Text('Music Folders', style: TextStyle(fontWeight: FontWeight.w500)),
+      title:
+          Text('Music Folders', style: TextStyle(fontWeight: FontWeight.w500)),
       subtitle: Text('${_settingsManager.musicFolders.length} folders'),
       trailing: Icon(Icons.chevron_right, color: Colors.grey),
       onTap: () {
@@ -3380,11 +3434,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     await _settingsManager.setThemeColor(color);
                     widget.onThemeChanged?.call();
                     Navigator.pop(context);
-
-                    // Also refresh the main screen
-                    if (Navigator.canPop(context)) {
-                      Navigator.popUntil(context, (route) => route.isFirst);
-                    }
                   },
                   child: Container(
                     decoration: BoxDecoration(
@@ -3507,7 +3556,8 @@ class _MusicFoldersScreenState extends State<MusicFoldersScreen> {
                 final folder = _settingsManager.musicFolders[index];
                 return Card(
                   child: ListTile(
-                    leading: Icon(Icons.folder, color: _settingsManager.themeColor),
+                    leading:
+                        Icon(Icons.folder, color: _settingsManager.themeColor),
                     title: Text(
                       folder.split('/').last,
                       style: TextStyle(fontWeight: FontWeight.w600),
@@ -3571,23 +3621,6 @@ class _MusicFoldersScreenState extends State<MusicFoldersScreen> {
   }
 }
 
-// Data Models
-class Album {
-  final String title;
-  final String artist;
-  final String imagePath;
-  final Color color;
-
-  Album(this.title, this.artist, this.imagePath, this.color);
-}
-
-class Song {
-  final String title;
-  final String duration;
-
-  Song(this.title, this.duration);
-}
-
 class RecentlyPlayedScreen extends StatefulWidget {
   @override
   _RecentlyPlayedScreenState createState() => _RecentlyPlayedScreenState();
@@ -3629,12 +3662,14 @@ class _RecentlyPlayedScreenState extends State<RecentlyPlayedScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: _settingsManager.isDarkMode ? Colors.grey[900] : Colors.white,
+      backgroundColor:
+          _settingsManager.isDarkMode ? Colors.grey[900] : Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: _settingsManager.isDarkMode ? Colors.white : Colors.black),
+          icon: Icon(Icons.arrow_back_ios,
+              color: _settingsManager.isDarkMode ? Colors.white : Colors.black),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
@@ -3647,100 +3682,108 @@ class _RecentlyPlayedScreenState extends State<RecentlyPlayedScreen> {
         ),
       ),
       body: isLoading
-        ? Center(child: CircularProgressIndicator(color: _settingsManager.themeColor))
-        : recentlyPlayedFiles.isEmpty
           ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.history,
-                    size: 80,
-                    color: Colors.grey[300],
-                  ),
-                  SizedBox(height: 16),
-                  Text(
-                    'No recently played songs',
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: _settingsManager.isDarkMode ? Colors.grey[400] : Colors.grey[600],
-                    ),
-                  ),
-                ],
-              ),
-            )
-          : ListView.builder(
-              padding: EdgeInsets.all(16),
-              itemCount: recentlyPlayedFiles.length,
-              itemBuilder: (context, index) {
-                final file = recentlyPlayedFiles[index];
-                final fileName = _getFileName(file.path);
-
-                return ListTile(
-                  leading: Container(
-                    width: 50,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      color: SettingsManager().themeColor,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Icon(
-                      Icons.music_note,
-                      color: Colors.white,
-                    ),
-                  ),
-                  title: Text(
-                    fileName,
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      color: _settingsManager.isDarkMode ? Colors.white : Colors.black,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  subtitle: Text(
-                    'Recently played',
-                    style: TextStyle(
-                      color: _settingsManager.isDarkMode ? Colors.grey[400] : Colors.grey[600],
-                      fontSize: 12
-                    ),
-                  ),
-                  trailing: IconButton(
-                    icon: Icon(Icons.play_arrow, color: SettingsManager().themeColor),
-                    onPressed: () async {
-                      await _audioManager.playFromFile(file.path);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => NowPlayingScreenWithData(
-                            songTitle: fileName,
-                            artist: 'Unknown Artist',
-                            filePath: file.path,
-                            allSongs: recentlyPlayedFiles,
-                            currentIndex: index,
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                  onTap: () async {
-                    await _audioManager.playFromFile(file.path);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => NowPlayingScreenWithData(
-                          songTitle: fileName,
-                          artist: 'Unknown Artist',
-                          filePath: file.path,
-                          allSongs: recentlyPlayedFiles,
-                          currentIndex: index,
+              child:
+                  CircularProgressIndicator(color: _settingsManager.themeColor))
+          : recentlyPlayedFiles.isEmpty
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.history,
+                        size: 80,
+                        color: Colors.grey[300],
+                      ),
+                      SizedBox(height: 16),
+                      Text(
+                        'No recently played songs',
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: _settingsManager.isDarkMode
+                              ? Colors.grey[400]
+                              : Colors.grey[600],
                         ),
                       ),
+                    ],
+                  ),
+                )
+              : ListView.builder(
+                  padding: EdgeInsets.all(16),
+                  itemCount: recentlyPlayedFiles.length,
+                  itemBuilder: (context, index) {
+                    final file = recentlyPlayedFiles[index];
+                    final fileName = _getFileName(file.path);
+
+                    return ListTile(
+                      leading: Container(
+                        width: 50,
+                        height: 50,
+                        decoration: BoxDecoration(
+                          color: SettingsManager().themeColor,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Icon(
+                          Icons.music_note,
+                          color: Colors.white,
+                        ),
+                      ),
+                      title: Text(
+                        fileName,
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          color: _settingsManager.isDarkMode
+                              ? Colors.white
+                              : Colors.black,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      subtitle: Text(
+                        'Recently played',
+                        style: TextStyle(
+                            color: _settingsManager.isDarkMode
+                                ? Colors.grey[400]
+                                : Colors.grey[600],
+                            fontSize: 12),
+                      ),
+                      trailing: IconButton(
+                        icon: Icon(Icons.play_arrow,
+                            color: SettingsManager().themeColor),
+                        onPressed: () async {
+                          await _audioManager.playFromFile(file.path);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => NowPlayingScreenWithData(
+                                songTitle: fileName,
+                                artist: 'Unknown Artist',
+                                filePath: file.path,
+                                allSongs: recentlyPlayedFiles,
+                                currentIndex: index,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                      onTap: () async {
+                        await _audioManager.playFromFile(file.path);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => NowPlayingScreenWithData(
+                              songTitle: fileName,
+                              artist: 'Unknown Artist',
+                              filePath: file.path,
+                              allSongs: recentlyPlayedFiles,
+                              currentIndex: index,
+                            ),
+                          ),
+                        );
+                      },
                     );
                   },
-                );
-              },
-            ),
+                ),
     );
   }
 }
@@ -3786,12 +3829,14 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: _settingsManager.isDarkMode ? Colors.grey[900] : Colors.white,
+      backgroundColor:
+          _settingsManager.isDarkMode ? Colors.grey[900] : Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: _settingsManager.isDarkMode ? Colors.white : Colors.black),
+          icon: Icon(Icons.arrow_back_ios,
+              color: _settingsManager.isDarkMode ? Colors.white : Colors.black),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
@@ -3804,121 +3849,132 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
         ),
       ),
       body: isLoading
-        ? Center(child: CircularProgressIndicator(color: _settingsManager.themeColor))
-        : favoriteFiles.isEmpty
           ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.favorite_border,
-                    size: 80,
-                    color: Colors.grey[300],
-                  ),
-                  SizedBox(height: 16),
-                  Text(
-                    'No favorite songs yet',
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: _settingsManager.isDarkMode ? Colors.grey[400] : Colors.grey[600],
-                    ),
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    'Tap the heart icon to add songs to favorites',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: _settingsManager.isDarkMode ? Colors.grey[500] : Colors.grey[500],
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ),
-            )
-          : ListView.builder(
-              padding: EdgeInsets.all(16),
-              itemCount: favoriteFiles.length,
-              itemBuilder: (context, index) {
-                final file = favoriteFiles[index];
-                final fileName = _getFileName(file.path);
-
-                return ListTile(
-                  leading: Container(
-                    width: 50,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      color: SettingsManager().themeColor,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Icon(
-                      Icons.music_note,
-                      color: Colors.white,
-                    ),
-                  ),
-                  title: Text(
-                    fileName,
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      color: _settingsManager.isDarkMode ? Colors.white : Colors.black,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  subtitle: Text(
-                    'Favorite song',
-                    style: TextStyle(
-                      color: _settingsManager.isDarkMode ? Colors.grey[400] : Colors.grey[600],
-                      fontSize: 12
-                    ),
-                  ),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
+              child:
+                  CircularProgressIndicator(color: _settingsManager.themeColor))
+          : favoriteFiles.isEmpty
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      IconButton(
-                        icon: Icon(Icons.favorite, color: Colors.red),
-                        onPressed: () async {
-                          await _audioManager.toggleFavorite(file.path);
-                          _loadFavorites();
-                        },
+                      Icon(
+                        Icons.favorite_border,
+                        size: 80,
+                        color: Colors.grey[300],
                       ),
-                      IconButton(
-                        icon: Icon(Icons.play_arrow, color: SettingsManager().themeColor),
-                        onPressed: () async {
-                          await _audioManager.playFromFile(file.path);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => NowPlayingScreenWithData(
-                                songTitle: fileName,
-                                artist: 'Unknown Artist',
-                                filePath: file.path,
-                                allSongs: favoriteFiles,
-                                currentIndex: index,
-                              ),
-                            ),
-                          );
-                        },
+                      SizedBox(height: 16),
+                      Text(
+                        'No favorite songs yet',
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: _settingsManager.isDarkMode
+                              ? Colors.grey[400]
+                              : Colors.grey[600],
+                        ),
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        'Tap the heart icon to add songs to favorites',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: _settingsManager.isDarkMode
+                              ? Colors.grey[500]
+                              : Colors.grey[500],
+                        ),
+                        textAlign: TextAlign.center,
                       ),
                     ],
                   ),
-                  onTap: () async {
-                    await _audioManager.playFromFile(file.path);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => NowPlayingScreenWithData(
-                          songTitle: fileName,
-                          artist: 'Unknown Artist',
-                          filePath: file.path,
-                          allSongs: favoriteFiles,
-                          currentIndex: index,
+                )
+              : ListView.builder(
+                  padding: EdgeInsets.all(16),
+                  itemCount: favoriteFiles.length,
+                  itemBuilder: (context, index) {
+                    final file = favoriteFiles[index];
+                    final fileName = _getFileName(file.path);
+
+                    return ListTile(
+                      leading: Container(
+                        width: 50,
+                        height: 50,
+                        decoration: BoxDecoration(
+                          color: SettingsManager().themeColor,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Icon(
+                          Icons.music_note,
+                          color: Colors.white,
                         ),
                       ),
+                      title: Text(
+                        fileName,
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          color: _settingsManager.isDarkMode
+                              ? Colors.white
+                              : Colors.black,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      subtitle: Text(
+                        'Favorite song',
+                        style: TextStyle(
+                            color: _settingsManager.isDarkMode
+                                ? Colors.grey[400]
+                                : Colors.grey[600],
+                            fontSize: 12),
+                      ),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: Icon(Icons.favorite, color: Colors.red),
+                            onPressed: () async {
+                              await _audioManager.toggleFavorite(file.path);
+                              _loadFavorites();
+                            },
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.play_arrow,
+                                color: SettingsManager().themeColor),
+                            onPressed: () async {
+                              await _audioManager.playFromFile(file.path);
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      NowPlayingScreenWithData(
+                                    songTitle: fileName,
+                                    artist: 'Unknown Artist',
+                                    filePath: file.path,
+                                    allSongs: favoriteFiles,
+                                    currentIndex: index,
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                      onTap: () async {
+                        await _audioManager.playFromFile(file.path);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => NowPlayingScreenWithData(
+                              songTitle: fileName,
+                              artist: 'Unknown Artist',
+                              filePath: file.path,
+                              allSongs: favoriteFiles,
+                              currentIndex: index,
+                            ),
+                          ),
+                        );
+                      },
                     );
                   },
-                );
-              },
-            ),
+                ),
     );
   }
 }
